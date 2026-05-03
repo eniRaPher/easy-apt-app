@@ -71,7 +71,7 @@
               </div>
               <div class="w-full sm:w-48">
                 <label class="block text-xs font-semibold text-slate-500 mb-1">จำนวนเงิน (บาท/หน่วย)</label>
-                <input v-model="fee.amount" type="number" step="10" min="0" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none font-mono text-slate-700" placeholder="เช่น 300">
+                <input v-model="fee.amount" type="number" step="1" min="0" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none font-mono text-slate-700" placeholder="เช่น 300">
               </div>
               <button type="button" @click="removeOtherFee(fee.id)" class="text-slate-400 hover:text-red-500 p-2 sm:mb-0.5 rounded-lg hover:bg-red-50 transition-colors" title="ลบค่าธรรมเนียม">
                 <Trash2 class="w-5 h-5" />
@@ -112,7 +112,7 @@
               </div>
               <div class="w-full sm:w-48">
                 <label class="block text-xs font-semibold text-slate-500 mb-1">ค่าอัตรารายเดือน (บาท)</label>
-                <input v-model="zone.rate" type="number" step="10" min="0" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none font-mono" placeholder="เช่น 1000">
+                <input v-model="zone.rate" type="number" step="1" min="0" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none font-mono" placeholder="เช่น 1000">
               </div>
               <button type="button" @click="removeParkingZone(zone.id)" class="text-slate-400 hover:text-red-500 p-2 sm:mb-0.5 rounded-lg hover:bg-red-50 transition-colors" title="ลบโซน">
                 <Trash2 class="w-5 h-5" />

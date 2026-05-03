@@ -129,7 +129,9 @@
           </button>
         </div>
         <div class="flex space-x-3">
-          <button @click="closeModal" class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">ปิด</button>
+          <button @click="saveBillData" class="px-4 py-2.5 text-sm font-bold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-sm flex items-center">
+            <Save class="w-4 h-4 mr-1.5" /> บันทึก
+          </button>
           
           <button v-if="bill?.status === 'Draft'" @click="changeToPending" class="px-4 py-2.5 text-sm font-bold text-white bg-amber-600 rounded-lg hover:bg-amber-700 flex items-center transition-colors shadow-sm">
             <Clock class="w-4 h-4 mr-1.5" /> รอชำระ
@@ -146,7 +148,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { FileCheck, FileText, X, Check, Zap, Droplets, ArrowRight, Equal, UploadCloud, XCircle, Clock } from 'lucide-vue-next'
+import { FileCheck, FileText, X, Check, Zap, Droplets, ArrowRight, Equal, UploadCloud, XCircle, Clock, Save } from 'lucide-vue-next'
 import Swal from 'sweetalert2'
 
 const props = defineProps({
@@ -230,6 +232,19 @@ const updateBillTotal = () => {
       (props.bill.water || 0) + 
       (props.bill.parkingFee || 0)
   }
+}
+
+const saveBillData = () => {
+  updateBillTotal()
+  Swal.fire({
+    icon: 'success',
+    title: 'บันทึกสำเร็จ',
+    text: 'บันทึกข้อมูลบิลเรียบร้อยแล้ว',
+    confirmButtonText: 'ตกลง',
+    timer: 1500
+  }).then(() => {
+    closeModal()
+  })
 }
 
 const approvePayment = () => {

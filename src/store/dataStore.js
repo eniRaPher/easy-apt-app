@@ -39,14 +39,29 @@ export const dataStore = reactive({
     { id: 9, monthCode: '2023-08', month: 'สิงหาคม 2023', code: 'INV-202308-001', room: 'A101', createdAt: '01 ส.ค. 2023', total: 6770, status: 'Paid', rent: 4500, parkingFee: 1000, electric: 820, water: 150, otherFees: [{id:1, name:'ค่าส่วนกลาง', amount:300}], elecUnits: 102.5, elecRate: 8, waterUnits: 7.5, waterRate: 20 }
   ],
   broadcast: {
-    settings: {
-      sms: true,
-      line: true,
-      email: false
-    },
-    broadcastType: 'sms',
-    scheduleDay: '25',
-    scheduleTime: '10:00',
-    messageBody: 'เรียนคุณ {name} ห้อง {room},\n\nทางอพาร์ทเมนต์ขอแจ้งเตือนยอดค้างชำระจำนวน {amount} บาท รบกวนชำระเงินภายในวันที่ 5 ของเดือน\n\nขอบคุณค่ะ'
+    broadcastType: 'water',
+    templates: {
+      water: {
+        active: true,
+        audience: 'ผู้เช่าทั้งหมด',
+        scheduleDay: '25',
+        scheduleTime: '10:00',
+        messageBody: 'เรียนคุณ {name} ห้อง {room},\n\nทางอพาร์ทเมนต์ขอแจ้งให้ส่งหมายเลขมิเตอร์น้ำของเดือนนี้\n\nขอบคุณค่ะ'
+      },
+      electric: {
+        active: true,
+        audience: 'ผู้เช่าทั้งหมด',
+        scheduleDay: '25',
+        scheduleTime: '10:00',
+        messageBody: 'เรียนคุณ {name} ห้อง {room},\n\nทางอพาร์ทเมนต์ขอแจ้งให้ส่งหมายเลขมิเตอร์ไฟฟ้าของเดือนนี้\n\nขอบคุณค่ะ'
+      },
+      payment: {
+        active: false,
+        audience: 'เฉพาะคนที่ค้างชำระบิล',
+        scheduleDay: '5',
+        scheduleTime: '10:00',
+        messageBody: 'เรียนคุณ {name} ห้อง {room},\n\nทางอพาร์ทเมนต์ขอแจ้งเตือนยอดค้างชำระบิลจำนวน {amount} บาท รบกวนช่วยชำระเงินด้วยครับ\n\nขอบคุณค่ะ'
+      }
+    }
   }
 })

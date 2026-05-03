@@ -248,7 +248,7 @@ const confirmCreateNewBill = () => {
 
   const otherTotal = snapshotOtherFees.reduce((acc, f) => acc + f.amount, 0)
   
-  dataStore.bills.unshift({
+  const newBill = {
     id: newId,
     code: `INV-NEW-${newId.toString().padStart(3, '0')}`,
     room: customer.room,
@@ -262,8 +262,13 @@ const confirmCreateNewBill = () => {
     parkingFee: parkingFee,
     total: 4500 + otherTotal + parkingFee,
     status: 'Draft'
-  })
+  }
+  
+  dataStore.bills.unshift(newBill)
   isCreateBillModalOpen.value = false
+  
+  // Show modal immediately after creating
+  openVerifyModal(newBill)
 }
 
 const filteredBills = computed(() => {

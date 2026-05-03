@@ -252,8 +252,11 @@
             </div>
 
             <!-- Optional Tenant Input -->
-            <div v-if="rForm.status === 'Occupied'">
-              <label class="block text-sm font-semibold text-slate-700 mb-2">ชื่อผู้เช่าปัจจุบัน <span class="text-slate-400 font-normal text-xs ml-1">(ระบุอัตโนมัติ)</span></label>
+            <div v-if="rForm.status === 'Occupied' || rForm.status === 'Reserved'">
+              <label class="block text-sm font-semibold text-slate-700 mb-2">
+                {{ rForm.status === 'Reserved' ? 'ชื่อผู้จองปัจจุบัน' : 'ชื่อผู้เช่าปัจจุบัน' }} 
+                <span class="text-slate-400 font-normal text-xs ml-1">(ระบุอัตโนมัติ)</span>
+              </label>
               <input v-model="rForm.tenant" type="text" disabled class="w-full border border-slate-300 bg-slate-100/70 text-slate-500 rounded-lg px-3 py-2 text-sm cursor-not-allowed outline-none" placeholder="ดึงข้อมูลอัตโนมัติจากระบบเช่าห้อง">
             </div>
 
@@ -462,7 +465,7 @@ const saveRoom = () => {
   const floor = currentBuilding.value.floors.find(f => f.id === selectedFloorIdForRoom.value)
   if (!floor) return
 
-  const tenantName = rForm.status === 'Occupied' ? rForm.tenant : null
+  const tenantName = (rForm.status === 'Occupied' || rForm.status === 'Reserved') ? rForm.tenant : null
 
   if (rModalMode.value === 'add') {
     floor.rooms.push({

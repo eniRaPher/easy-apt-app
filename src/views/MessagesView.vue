@@ -11,39 +11,39 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             
             <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all"
-                   :class="broadcastType === 'sms' ? 'border-primary-500 ring-1 ring-primary-500' : 'border-slate-200 hover:border-slate-300'">
-              <input type="radio" name="broadcast_type" value="sms" v-model="broadcastType" class="sr-only">
+                   :class="broadcastType === 'water' ? 'border-primary-500 ring-1 ring-primary-500' : 'border-slate-200 hover:border-slate-300'">
+              <input type="radio" name="broadcast_type" value="water" v-model="broadcastType" class="sr-only">
               <span class="flex flex-1">
                 <span class="flex flex-col">
                   <span class="block text-sm font-bold text-slate-900">ค่าน้ำ</span>
                   <span class="mt-1 flex items-center text-xs text-slate-500">แจ้งเตือนให้ส่งเลขมิเตอร์</span>
                 </span>
               </span>
-              <Droplets class="h-5 w-5 text-primary-600" v-if="broadcastType === 'sms'" />
+              <Droplets class="h-5 w-5 text-primary-600" v-if="broadcastType === 'water'" />
             </label>
 
             <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all"
-                   :class="broadcastType === 'line' ? 'border-primary-500 ring-1 ring-primary-500' : 'border-slate-200 hover:border-slate-300'">
-              <input type="radio" name="broadcast_type" value="line" v-model="broadcastType" class="sr-only">
+                   :class="broadcastType === 'electric' ? 'border-primary-500 ring-1 ring-primary-500' : 'border-slate-200 hover:border-slate-300'">
+              <input type="radio" name="broadcast_type" value="electric" v-model="broadcastType" class="sr-only">
               <span class="flex flex-1">
                 <span class="flex flex-col">
                   <span class="block text-sm font-bold text-slate-900">ค่าไฟ</span>
                   <span class="mt-1 flex items-center text-xs text-slate-500">แจ้งเตือนให้ส่งเลขมิเตอร์</span>
                 </span>
               </span>
-              <Zap class="h-5 w-5 text-primary-500" v-if="broadcastType === 'line'" />
+              <Zap class="h-5 w-5 text-primary-500" v-if="broadcastType === 'electric'" />
             </label>
 
             <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none transition-all"
-                   :class="broadcastType === 'email' ? 'border-primary-500 ring-1 ring-primary-500' : 'border-slate-200 hover:border-slate-300'">
-              <input type="radio" name="broadcast_type" value="email" v-model="broadcastType" class="sr-only">
+                   :class="broadcastType === 'payment' ? 'border-primary-500 ring-1 ring-primary-500' : 'border-slate-200 hover:border-slate-300'">
+              <input type="radio" name="broadcast_type" value="payment" v-model="broadcastType" class="sr-only">
               <span class="flex flex-1">
                 <span class="flex flex-col">
                   <span class="block text-sm font-bold text-slate-900">ชำระบิล</span>
                   <span class="mt-1 flex items-center text-xs text-slate-500">แจ้งเตือนให้ส่งหลักฐานการชำระเงิน</span>
                 </span>
               </span>
-              <Receipt class="h-5 w-5 text-primary-500" v-if="broadcastType === 'email'" />
+              <Receipt class="h-5 w-5 text-primary-500" v-if="broadcastType === 'payment'" />
             </label>
           </div>
         </div>
@@ -55,11 +55,11 @@
             <p class="text-xs text-slate-500 mt-1">เปิดใช้งานการส่งข้อความอัตโนมัติสำหรับช่องทางนี้</p>
           </div>
           <div class="flex items-center space-x-3 bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm">
-            <span class="text-sm font-bold uppercase tracking-wide" :class="broadcastSettings[broadcastType] ? 'text-green-600' : 'text-slate-400'">
-              {{ broadcastSettings[broadcastType] ? 'Active' : 'Inactive' }}
+            <span class="text-sm font-bold uppercase tracking-wide" :class="isActive ? 'text-green-600' : 'text-slate-400'">
+              {{ isActive ? 'Active' : 'Inactive' }}
             </span>
             <label class="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" v-model="broadcastSettings[broadcastType]" class="sr-only peer">
+              <input type="checkbox" v-model="isActive" class="sr-only peer">
               <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
             </label>
           </div>
@@ -68,11 +68,11 @@
         <!-- Target Audience -->
         <div class="mb-6">
           <label class="block text-sm font-semibold text-slate-700 mb-2">กลุ่มเป้าหมาย</label>
-          <select class="mt-1 block w-full rounded-md border-slate-300 py-3 pl-3 pr-10 text-base focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm border">
-            <option>ผู้เช่าทั้งหมด</option>
-            <option>เฉพาะคนที่ค้างชำระบิล</option>
-            <option>เฉพาะอาคาร A</option>
-            <option>เฉพาะอาคาร B</option>
+          <select v-model="audience" class="mt-1 block w-full rounded-md border-slate-300 py-3 pl-3 pr-10 text-base focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm border">
+            <option value="ผู้เช่าทั้งหมด">ผู้เช่าทั้งหมด</option>
+            <option value="เฉพาะคนที่ค้างชำระบิล">เฉพาะคนที่ค้างชำระบิล</option>
+            <option value="เฉพาะอาคาร A">เฉพาะอาคาร A</option>
+            <option value="เฉพาะอาคาร B">เฉพาะอาคาร B</option>
           </select>
         </div>
 
@@ -137,22 +137,32 @@ import { Droplets, Zap, Receipt, Send, Calendar, Clock } from 'lucide-vue-next'
 import { dataStore } from '../store/dataStore'
 import Swal from 'sweetalert2'
 
-const broadcastSettings = computed(() => dataStore.broadcast.settings)
 const broadcastType = computed({
   get: () => dataStore.broadcast.broadcastType,
   set: (val) => dataStore.broadcast.broadcastType = val
 })
+
+const currentTemplate = computed(() => dataStore.broadcast.templates[broadcastType.value])
+
+const isActive = computed({
+  get: () => currentTemplate.value.active,
+  set: (val) => currentTemplate.value.active = val
+})
+const audience = computed({
+  get: () => currentTemplate.value.audience,
+  set: (val) => currentTemplate.value.audience = val
+})
 const scheduleDay = computed({
-  get: () => dataStore.broadcast.scheduleDay,
-  set: (val) => dataStore.broadcast.scheduleDay = val
+  get: () => currentTemplate.value.scheduleDay,
+  set: (val) => currentTemplate.value.scheduleDay = val
 })
 const scheduleTime = computed({
-  get: () => dataStore.broadcast.scheduleTime,
-  set: (val) => dataStore.broadcast.scheduleTime = val
+  get: () => currentTemplate.value.scheduleTime,
+  set: (val) => currentTemplate.value.scheduleTime = val
 })
 const messageBody = computed({
-  get: () => dataStore.broadcast.messageBody,
-  set: (val) => dataStore.broadcast.messageBody = val
+  get: () => currentTemplate.value.messageBody,
+  set: (val) => currentTemplate.value.messageBody = val
 })
 
 const sendMessage = () => {
@@ -160,14 +170,14 @@ const sendMessage = () => {
     Swal.fire({
       icon: 'success',
       title: 'สำเร็จ',
-      text: `ตั้งเวลาส่งข้อความผ่าน ${broadcastType.value} ทุกวันที่ ${scheduleDay.value} เวลา ${scheduleTime.value} น. เรียบร้อยแล้ว`,
+      text: `ตั้งเวลาส่งข้อความผ่าน LINE ทุกวันที่ ${scheduleDay.value} เวลา ${scheduleTime.value} น. เรียบร้อยแล้ว`,
       confirmButtonText: 'ตกลง'
     })
   } else {
     Swal.fire({
       icon: 'info',
       title: 'กำลังส่ง...',
-      text: `กำลังส่งข้อความผ่าน ${broadcastType.value} ไปยังผู้เช่า...`,
+      text: `กำลังส่งข้อความผ่าน LINE ไปยังผู้เช่า...`,
       confirmButtonText: 'ตกลง'
     })
   }

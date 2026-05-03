@@ -78,6 +78,42 @@
           </button>
         </div>
 
+        <div v-else-if="rentalData.status === 'Reserved'" class="bg-white rounded-xl shadow-sm border border-blue-200 p-6 flex flex-col h-full">
+          <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center">
+            <UserCheck class="w-5 h-5 mr-2 text-blue-600" />
+            ข้อมูลการจอง
+          </h3>
+          <div class="space-y-4 flex-grow">
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">ชื่อผู้จอง</p>
+              <p class="font-medium text-slate-800">{{ rentalData.tenantName || 'ไม่มีข้อมูล' }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">วันที่ทำรายการ</p>
+              <p class="font-medium text-slate-800">{{ new Date().toLocaleDateString('th-TH', { day: '2-digit', month: 'short', year: 'numeric' }) }}</p>
+            </div>
+            <div>
+              <p class="text-sm italic text-blue-600 mt-4">ห้องนี้ถูกจองไว้แล้ว และรอผู้เช่ายืนยันการย้ายเข้า</p>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-5 border-t border-blue-100 flex flex-col space-y-3">
+             <button @click="startMoveIn" class="w-full flex items-center justify-center space-x-2 bg-emerald-600 text-white hover:bg-emerald-700 py-3 rounded-lg font-bold transition-all shadow-sm group">
+               <Check class="w-5 h-5 mr-1" />
+               <span>ยืนยันย้ายเข้า</span>
+             </button>
+             <div>
+               <button @click="isMoveOutModalOpen = true" class="w-full flex items-center justify-center space-x-2 bg-red-50 border border-red-200 text-red-600 hover:bg-red-600 hover:text-white py-2.5 rounded-lg font-bold transition-all shadow-sm group mt-2">
+                 <LogOut class="w-4 h-4 group-hover:animate-pulse" />
+                 <span>ยกเลิกการจอง</span>
+               </button>
+               <p class="text-[11px] text-center text-red-500/80 mt-2.5 font-semibold flex items-center justify-center">
+                 <AlertTriangle class="w-3 h-3 mr-1" /> ลบข้อมูลการจองและเปลี่ยนห้องเป็นว่าง
+               </p>
+             </div>
+          </div>
+        </div>
+
         <div v-else class="bg-white rounded-xl shadow-sm border border-emerald-200 p-8 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
           <div class="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-6 shadow-sm border border-emerald-100">
             <CheckCircle class="w-12 h-12" />
@@ -415,6 +451,49 @@ const handleAssignTenant = () => {
     confirmButtonText: 'ตกลง'
   }).then(() => {
     closeAssignModal()
+  })
+}
+
+const startMoveIn = () => {
+  Swal.fire({
+    title: 'ยืนยันการเข้าพัก',
+    text: `ต้องการเปลี่ยนสถานะห้อง ${roomNumber.value} เป็น "มีผู้เช่า" ใช่หรือไม่?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#10b981',
+    cancelButtonColor: '#94a3b8',
+    confirmButtonText: 'ยืนยันเข้าอยู่',
+    cancelButtonText: 'ยกเลิก',
+    customClass: {
+      confirmButton: 'px-4 py-2 font-bold text-white rounded-lg',
+      cancelButton: 'px-4 py-2 font-medium text-white rounded-lg'
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let found = false
+      for (const b of dataStore.buildings) {
+        for (const f of b.floors) {
+          const room = f.rooms.find(r => r.number === roomNumber.value)
+          if (room) {
+            room.status = 'Occupied'
+            found = true
+            break
+          }
+        }
+        if (found) break
+      }
+
+      rentalData.value.status = 'Occupied'
+      rentalData.value.startDate = new Date().toLocaleDateString('th-TH', { day: '2-digit', month: 'long', year: 'numeric' })
+      rentalData.value.contractId = `CT-${new Date().getFullYear()}-${roomNumber.value}`
+
+      Swal.fire({
+        icon: 'success',
+        title: 'สำเร็จ',
+        text: `อัปเดตสถานะห้องเป็น "มีผู้เช่า" สำเร็จ`,
+        confirmButtonText: 'ตกลง'
+      })
+    }
   })
 }
 
